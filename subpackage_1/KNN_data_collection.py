@@ -1,12 +1,13 @@
 import numpy as np
 import csv
+
 class KNN:
     def __init__(self,model_type,k=3):
         self.k = k
         if model_type=='regressor' or model_type=='classifier':
             self.model_type = model_type
         else:
-            raise ValueError('Model type must be "regressor" or "classifier"')
+            raise ValueError(str(model_type)+' is not a valid model type, must be "regressor" or "classifier"')
         print('Created KNN '+str(model_type)+' with k='+str(k)+'!')
 
     def load_csv(self,path,response):
@@ -20,11 +21,17 @@ class KNN:
         # Convert dataset to numpy array
         data_np=np.array(data_lst[1:])
         # Find column number of response var
-        response_position=column_names.index(response)
+        if response in column_names:
+            response_position=column_names.index(response)
+        else:
+            raise ValueError(str(response)+' not found in dataset')
         # Split into x,y and store as instance attribute
         self.x=np.delete(data_np,response_position,axis=1).astype(float)
-        self.y=data_np[:,response_position]
-        print('Dataset successfully loaded.')
+        if self.model_type=='regressor':
+            self.y=data_np[:,response_position].astype(float)
+        else:
+            self.y=data_np[:,response_position]
+        print('Dataset successfully loaded!')
 
     def train_test_split(self, test_size = 0.3):
         # Select indices for test/train split
