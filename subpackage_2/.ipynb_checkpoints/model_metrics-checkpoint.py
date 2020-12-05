@@ -1,55 +1,66 @@
-import subpackage_1.KNN_data_collection as knn
+import subpackage_1.KNN_data_collection as KNN_module
 import subpackage_1.generate_predictions as gp
 import numpy as np
-def model_accuracy(actual, predicted): # for classifer
-    """Model accuracy for Classification"""
-    if np.mean(np.array(predicted)) == np.mean(np.array(actual)):
-        result = 1
-    else:
-        result = 0
-    print("Prediction Output: (1: Success, 0:Incorrect prediction)", result) 
 
-def model_misclassification(actual, predicted): #for classifer
-        misclassification_rate = 0
-        total_size = np.size(np.array(actual))
-        missclassify = np.mean(np.array(predicted)) != np.mean(np.array(actual))
-        misclassification_rate = (total_size - missclassify)/total_size
-        print('Misclassification Rate:',misclassification_rate)
-        
-            
-def model_rmse(actual, predicted): # for regressor
-    total_size = np.size(np.array(actual))
-    rmse = 0
-    rmse = np.sqrt(np.mean(np.array(predicted) - np.array(actual)**2)
+## Metrics for classification models
+def model_accuracy(actual,predicted): # for classifer
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    accuracy=np.mean(np.array(predicted)==np.array(actual))
+    return accuracy
+
+def model_misclassification(actual,predicted): #for classifer
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    misclassificaiton_rate=np.mean(np.array(predicted)!=np.array(actual))
+    return misclassificaiton_rate
+
+def model_num_correct(actual,predicted):
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    num_correct=np.sum(np.array(actual)==np.array(predicted))
+    return num_correct
+
+def model_num_incorrect(actual,predicted):
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    num_incorrect=np.sum(np.array(actual)!=np.array(predicted))
+    return num_incorrect
+
+## Metrics for regression models
+def model_rmse(actual,predicted): # for regressor
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    rmse=np.sqrt((np.array(actual)-np.array(predicted))**2)
     return rmse
-    
-def model_mape(actual, predicted): # for regressor
-    total_size = np.size(np.array(actual))
-    mape = 0
-    if knn_type == 'regressor':
-        mape = (np.sum(np.abs(np.array(actual) - np.array(predicted))/np.array(actual)/total_size)* 100
-    return mape
- 
-def assesment_metrics(knn_type, train_obs, test_obs):
-    test_accuracy = 0
-    test_missclassification =0
-    test_mape = 0
-    test_rmse = 0
-    
-    if knn_type == 'regressor':
-        train_result = gp.generate_predictions(regression_model, [train_obs, test_obs], 'train').astype(float)
-        test_result = gp.generate_predictions(regression_model, [train_obs, test_obs], 'all').astype(float)
-        test_rmse = model_rmse(test_result, train_result)
-        test_mape = model_mape(test_result,train_result)
-        
-    elif knn_type == 'classifier':
-        train_result = gp.generate_predictions(classification_model, [train_obs, test_obs], 'train')
-        test_result = gp.generate_predictions(classification_model, [train_obs, test_obs], 'all')
-        
-        test_accuracy = model_accuracy(test_result,train_result)
-        test_missclassification = model_misclassification(test_result,train_result)
-   
-    print('Accuracy of the Classifier model :', test_accuracy )
-    print('Misclassification of Classifier model : ',test_missclassification)    
-    print('RSME of regressor :', test_rmse)
-    print('MAPE of regressor : ',test_mape)
+
+def model_mse(actual,predicted): # for regressor
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    mse=(np.array(actual)-np.array(predicted))**2
+    return mse
+
+def model_mae(actual,predicted): # for regressor
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+    mae=np.mean(np.abs(np.array(actual)-np.array(predicted)))
+    return mae
+
+def model_mape(actual,predicted):
+    if len(actual)!=len(predicted):
+        raise ValueError('Length mismatch: length of actual and predicted arrays differ')
+     mape=(1/len(actual))*((np.abs(np.array(actual)-np.array(predicted)))/np.array(actual))*100
+     return mape
+
+def assesment_metrics(knn_model,train_obs,test_obs):
+    test_predictions=gp.generate_predictions(knn_model,knn_model.x_test,'train')
+    if knn_model.model_type =='regressor':
+        print('Test MSE: '+str(model_mse(knn_model.y_test,test_predictions)))
+        print('Test RMSE: '+str(model_rmse(knn_model.y_test,test_predictions)))
+        print('Test MAE: '+str(model_mae(knn_model.y_test,test_predictions)))
+        print('Test MAPE: '+str(model_mape(knn_model.y_test,test_predictions)))
+    elif knn_model.model_type =='classifier':
+        print('Test accuracy: '+str(model_accuracy(knn_model.y_test,test_predictions)))
+        print('Test misclassification rate: '+str(model_midclassification(knn_model.y_test,test_predictions)))
+        print('# correct predictions: '+str(model_num_correct(knn_model.y_test,test_predictions)))
+        print('# incorrect predictions: '+str(model_num_incorrect(knn_model.y_test,test_predictions)))

@@ -30,7 +30,7 @@ class CvKNN(KNN_module.KNN):
                 for i in range(self.num_folds):
                     fold_pred=gp.generate_predictions(self,x_folds[i],'train')
                     fold_true=y_folds[i]
-                    fold_results.append(model_midclassification(fold_true,fold_pred))
+                    fold_results.append(model_misclassification(fold_true,fold_pred))
                 self.__k_results.append(np.mean(fold_results))
     def get_cv_results(self):
         for i in range(len(self.__k_values)):
