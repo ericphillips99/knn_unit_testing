@@ -1,6 +1,8 @@
-import modelling.KNN_data_collection as KNN_module
-import modelling.generate_predictions as gp
-from assessment.model_metrics import *
+
+from ..modelling import KNN_data_collection as KNN_module
+from ..modelling import generate_predictions as gp
+from ..assessment.model_metrics import *
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
