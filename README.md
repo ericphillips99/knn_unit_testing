@@ -30,7 +30,7 @@
       - `model_mape`: Computes the mean absolute percent error
 
   - **cross_validation**
-    - `CvKNN` class inherits from `KNN` class (defined in in `modelling` module).
+    - `CvKNN` class inherits from `KNN` class (defined in in `modelling` module). Model must load CSV and perform train/test split using functions documented in `modelling` module in order to perform cross validation.
     - `init` constructor: Creates an instance of a KNN model for performing cross validation. Requires input `model_type`, indicating whether the model is a classifier or regressor. Optional input `num_folds` indicates the number of folds used in K-fold cross validation (default is 5).
     - `perform_cv`: Performs k-fold cross validation on the training set. Requires argument `k_values`, a list or numpy array of `k` values for which to perform CV on. This is done by first creating the indices needed to split training set into `num_folds` folds. For every value of `k` in `k_values`, predictions are generated for 1/`num_folds` of the training set (becoming the CV test set), using the other (`num_folds`-1)/`num_folds` values as the CV training set. The model's average performance across all folds (`mse` is used as the performance metric for regressors, while `misclassificaiton_rate` is used for classifiers) is recorded for each value of `k` in `k_values`.
     - `get_cv_results`: Displays the results from `perform_cv`. Average performance using the appropriate error metric across all folds is printed for each value of `k` provided in `perform_cv`. A lineplot created using the `seaborn` library is displayed, offering a visual representation of how the various `k` values influence the model's performance.
