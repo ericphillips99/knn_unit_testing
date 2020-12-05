@@ -49,8 +49,8 @@ def model_mae(actual,predicted): # for regressor
 def model_mape(actual,predicted):
     if len(actual)!=len(predicted):
         raise ValueError('Length mismatch: length of actual and predicted arrays differ')
-     mape=(1/len(actual))*((np.abs(np.array(actual)-np.array(predicted)))/np.array(actual))*100
-     return mape
+    mape=(1/len(actual))*((np.abs(np.array(actual)-np.array(predicted)))/np.array(actual))*100
+    return mape
 
 def assesment_metrics(knn_model):
     test_predictions=gp.generate_predictions(knn_model,knn_model.x_test,'train')
