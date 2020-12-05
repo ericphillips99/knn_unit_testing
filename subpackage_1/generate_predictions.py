@@ -37,7 +37,6 @@ def generate_prediction(knn_model,new_obs,subset): # Fix DRY violation
             return np.mean(knn_model.y[k_indices])
         elif knn_model.model_type=='classifier':
             classes,counts=np.unique(knn_model.y[k_indices],return_counts=True)
-            # Need to test if warning works as expected
             if len(counts)>1:
                 top_counts=np.sort(counts)[-2:]
                 if top_counts[0]==top_counts[1]:

@@ -6,39 +6,55 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 class CvKNN(KNN_module.KNN):
-    def __init__(self,model_type,k=3,num_folds=5):
-        KNN_module.KNN.__init__(self,model_type,k)
+    def __init__(self,model_type,num_folds=5):
+        if model_type=='regressor' or model_type=='classifier':
+            self.model_type = model_type
+        else:
+            raise ValueError(str(model_type)+' is not a valid model type, must be "regressor" or "classifier"')
         self.num_folds=num_folds
-        print('Number of CV folds: '+str(num_folds))
+        print('Created CV instance for KNN '+str(model_type)+' with '+str(num_folds)+' folds!')
+
+    def generate_cv_prediction(self,x_train,y_train,new_obs,k):
+        distances=np.apply_along_axis(lambda x:gp.euclidean_distance(x,new_obs),1,x_train)
+        k_indices=np.argsort(distances)[:k]
+        if self.model_type=='regressor':
+            return np.mean(y_train[k_indices])
+        elif self.model_type=='classifier':
+            classes,counts=np.unique(y_train[k_indices],return_counts=True)
+            return np.array(classes[np.argmax(counts)],dtype='object')
+
+    def generate_cv_predictions(self,x_train,y_train,x_test,k):
+        return np.apply_along_axis(lambda x:self.generate_cv_prediction(x_train,y_train,x,k),1,x_test)
 
     def perform_cv(self,k_values):
-        x_folds=np.array_split(self.x_train,self.num_folds)
-        y_folds=np.array_split(self.y_train,self.num_folds)
+        fold_size=len(self.x_train)//self.num_folds
+        split_indices=np.arange(0,len(self.x_train)+1,fold_size)
         self.__k_results=[]
-        self.__k_values=k_values
-        if self.model_type=='regressor':
-            for k in k_values:
-                fold_results=[]
-                for i in range(self.num_folds):
-                    fold_pred=gp.generate_predictions(self,x_folds[i],'train')
-                    fold_true=y_folds[i]
-                    fold_results.append(model_rmse(fold_true,fold_pred))
-                self.__k_results.append(np.mean(fold_results))
-        elif self.model_type=='classifier':
-            for k in k_values:
-                fold_results=[]
-                for i in range(self.num_folds):
-                    fold_pred=gp.generate_predictions(self,x_folds[i],'train')
-                    fold_true=y_folds[i]
-                    fold_results.append(model_misclassification(fold_true,fold_pred))
-                self.__k_results.append(np.mean(fold_results))
+        self.__k_values=[]
+        for k in k_values:
+            self.__k_values.append(k)
+            fold_results=[]
+            for i in range(self.num_folds):
+                indices_to_delete=np.arange(split_indices[i],split_indices[i+1])
+                x_train=np.delete(self.x_train,indices_to_delete,axis=0)
+                y_train=np.delete(self.y_train,indices_to_delete,axis=0)
+                x_test=self.x_train[split_indices[i]:split_indices[i+1]]
+                y_test=self.y_train[split_indices[i]:split_indices[i+1]]
+                fold_predictions=self.generate_cv_predictions(x_train,y_train,x_test,k)
+                if self.model_type=='regressor':
+                    fold_results.append(model_mse(y_test,fold_predictions))
+                elif self.model_type=='classifier':
+                    fold_results.append(model_misclassification(y_test,fold_predictions))
+            self.__k_results.append(np.mean(fold_results))
+        print('Successfully performed '+str(self.num_folds)+' CV!')
+
     def get_cv_results(self):
         for i in range(len(self.__k_values)):
             print('k='+str(self.__k_values[i])+': '+str(self.__k_results[i]))
         sns.lineplot(y=self.__k_results,x=self.__k_values)
         plt.title(str(self.num_folds)+' fold CV Results')
         if self.model_type=='regressor':
-            plt.ylabel('RMSE')
+            plt.ylabel('MSE')
         elif self.model_type=='classifier':
             plt.ylabel('Misclassification Rate')
         plt.xlabel('k Value')
@@ -50,7 +66,7 @@ class CvKNN(KNN_module.KNN):
         self.best_k=best_k
         print('Best k: '+str(best_k))
         if self.model_type=='regressor':
-            print('CV RMSE: '+str(self.__k_results[min_position]))
+            print('CV MSE: '+str(self.__k_results[min_position]))
         elif self.model_type=='classifier':
             print('CV Misclassification Rate: '+str(self.__k_results[min_position]))
-        return best_k
+        self.k=best_k
