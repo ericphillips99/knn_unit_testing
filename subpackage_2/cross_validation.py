@@ -39,7 +39,7 @@ class CvKNN(KNN_module.KNN):
         plt.title(str(self.num_folds)+' fold CV Results')
         if self.model_type=='regressor':
             plt.ylabel('RMSE')
-        elif self.model_type='classifier':
+        elif self.model_type=='classifier':
             plt.ylabel('Misclassification Rate')
         plt.xlabel('k Value')
         plt.show()
