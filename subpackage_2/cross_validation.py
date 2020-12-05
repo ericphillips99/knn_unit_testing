@@ -36,6 +36,12 @@ class CvKNN(KNN_module.KNN):
         for i in range(len(self.__k_values)):
             print('k='+str(self.__k_values[i])+': '+str(self.__k_results[i]))
         sns.lineplot(y=self.__k_results,x=self.__k_values)
+        plt.title(str(self.num_folds)+' fold CV Results')
+        if self.model_type=='regressor':
+            plt.ylabel('RMSE')
+        elif self.model_type='classifier':
+            plt.ylabel('Misclassification Rate')
+        plt.xlabel('k Value')
         plt.show()
 
     def get_best_k(self):
@@ -43,5 +49,8 @@ class CvKNN(KNN_module.KNN):
         best_k=self.__k_values[min_position]
         self.best_k=best_k
         print('Best k: '+str(best_k))
-        print('CV result: '+str(self.__k_results[min_position]))
+        if self.model_type=='regressor':
+            print('CV RMSE: '+str(self.__k_results[min_position]))
+        elif self.model_type=='classifier':
+            print('CV Misclassification Rate: '+str(self.__k_results[min_position]))
         return best_k
