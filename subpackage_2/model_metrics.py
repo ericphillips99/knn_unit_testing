@@ -18,16 +18,16 @@ def model_misclassification(actual, predicted): #for classifer
         
             
 def model_rmse(actual, predicted): # for regressor
-    total_size = np.size(actual)
+    total_size = np.size(np.array(actual))
     rmse = 0
-    rmse = np.sqrt(np.mean(predicted - actual)**2)
+    rmse = np.sqrt(np.mean(np.array(predicted) - np.array(actual)**2)
     return rmse
     
 def model_mape(actual, predicted): # for regressor
-    total_size = np.size(actual)
+    total_size = np.size(np.array(actual))
     mape = 0
     if knn_type == 'regressor':
-        mape = (np.sum(np.abs(actual - predicted)/actual)/total_size)* 100
+        mape = (np.sum(np.abs(np.array(actual) - np.array(predicted))/np.array(actual)/total_size)* 100
     return mape
  
 def assesment_metrics(knn_type, train_obs, test_obs):
