@@ -1,6 +1,8 @@
 # knn
 #### Implementation of K nearest neighbors model in Python. Supports built-in tuning of k hyper-parameter using k-fold cross validation.
 
+#### Example usage can be found in the `example_usage.ipynb` notebook. Package is contained within the `KNN` directory.
+
 ### modelling subpackage: KNN_data_collection and generate_prediction modules
   - **KNN_data_collection**
     - `init` constructor: Creates an instance of a KNN model. Requires input `model_type`, indicating whether the model is a classifier or regressor. Optional input `k` sets the number of nearest neighbors to consider when generating predictions (default is 3).
