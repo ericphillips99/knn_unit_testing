@@ -52,7 +52,7 @@ def model_mape(actual,predicted):
     mape=(1/len(actual))*np.sum((np.abs(np.array(actual)-np.array(predicted)))/np.array(actual))*100
     return mape
 
-def assesment_metrics(knn_model):
+def assessment_metrics(knn_model):
     test_predictions=gp.generate_predictions(knn_model,knn_model.x_test,'train')
     if knn_model.model_type =='regressor':
         print('Test MSE: '+str(model_mse(knn_model.y_test,test_predictions)))
