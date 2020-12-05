@@ -25,7 +25,7 @@ def generate_prediction(knn_model,new_obs,subset): # Fix DRY violation
                 top_counts=np.sort(counts)[-2:]
                 if top_counts[0]==top_counts[1]:
                     warnings.warn('Warning: A tie has occurred (top two classes in K nearest neighbors have the same number of occurances). Classification depends on the order of the training data.')
-            return classes[np.argmax(counts)]
+            return np.array(classes[np.argmax(counts)],dtype='object')
         else:
             print('Invalid model type for inputted model')
             return None
@@ -42,7 +42,7 @@ def generate_prediction(knn_model,new_obs,subset): # Fix DRY violation
                 top_counts=np.sort(counts)[-2:]
                 if top_counts[0]==top_counts[1]:
                     warnings.warn('Warning: A tie has occurred (top two classes in K nearest neighbors have the same number of occurances). Classification depends on the order of the training data.')
-            return classes[np.argmax(counts)]
+            return np.array(classes[np.argmax(counts)],dtype='object')
         else:
             print('Invalid model type for inputted model')
             return None

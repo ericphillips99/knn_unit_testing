@@ -19,7 +19,7 @@ class KNN:
         # Extract column names
         column_names=data_lst[0]
         # Convert dataset to numpy array
-        data_np=np.array(data_lst[1:])
+        data_np=np.array(data_lst[1:],dtype="object")
         # Find column number of response var
         if response in column_names:
             response_position=column_names.index(response)
