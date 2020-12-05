@@ -1,6 +1,6 @@
 import subpackage_1.KNN_data_collection as KNN_module
 import subpackage_1.generate_predictions as gp
-from model_metrics import *
+from subpackage_2.model_metrics import *
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
