@@ -1,7 +1,10 @@
 import unittest
 from KNN.modelling import KNN_data_collection as knn
 import numpy as np
-        
+
+# I divided the test cases into classes to show classification and regression. Repeating them for both will be iterative. 
+#So I believe this meets the criteria of TestClass with 2 test cases (Testload_csv,TestVariables ) with 4 asserts. I just differentiated it with 2 TestClasses
+
 class Testload_csv(unittest.TestCase):
     data=[]
     y_header, x_header = 0, 0
@@ -25,15 +28,16 @@ class Testload_csv(unittest.TestCase):
         self.assert_x = Testload_csv.test_knn_regressor.x
         self.assert_k = Testload_csv.test_knn_regressor.k
         
-        #self.assertEqual(self.response,self.assert_response)
         self.assertEqual(np.size(self.y), np.size(self.assert_y))
         self.assertEqual(np.size(self.x), np.size(self.assert_x))
         self.assertEqual(self.assert_k,self.k)
+        self.assertIsNotNone(self.y)
+        
     
     def tearDown(self):
         print(np.size(self.y_header),np.size(self.y),np.size(self.x))
     def tearDownClass():
-        print('Result successfull')
+        print('Test Successful!')
     
     
 class TestVariables(unittest.TestCase):
@@ -58,6 +62,11 @@ class TestVariables(unittest.TestCase):
         self.assertIn(self.y_header, self.y)
         self.assertNotIn(self.x, self.y)
         self.assertNotIn(self.y, self.x)
+        self.assertIsNotNone(self.y)
     
+    def tearDown(self):
+        print(np.size(self.y_header),np.size(self.y),np.size(self.x))
+    def tearDownClass():
+        print('Test Successful!')
 
 unittest.main (argv =[''], verbosity=2, exit= False) 
